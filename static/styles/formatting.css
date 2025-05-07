@@ -1,0 +1,59 @@
+html {
+    background-color: skyblue;
+    max-width: 600px;
+    max-height: 448px;
+}
+
+img {
+    width: 28vw;
+    height: fit-content;
+    position: fixed;
+}
+
+
+
+.plantIcon {
+    width: 60vw;
+    bottom: -4vh;
+    left: 29vh;
+}
+
+
+/*-------Sensor Indicators------*/
+
+.sensorIcons {
+    display: flex;
+    flex-direction: column;
+}
+
+.leftIcons {
+    margin-left: 6vw;
+    padding-top: 16vh;
+}
+
+.leftIcons>div {
+    padding-top: 29vh;
+}
+
+.leftIcons>div>img {
+    width: 16vw;
+}
+
+
+
+
+.rightIcons {
+    margin-left: 80vw;
+    position: fixed;
+    top: -130;
+}
+
+.rightIcons>div {
+    padding-top: 30vh;
+}
+
+.rightIcons>div>img {
+    width: 18vw
+}
+
+/*-------Sensor Indicators------*/
