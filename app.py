@@ -4,7 +4,13 @@ app = Flask(__name__)
 
 @app.route("/")
 def display():
-    return render_template("display.html")
+    weather = "cloud"
+    humidity = "red"
+    moisture = "red"
+    waterLevel = "red"
+    light = "red"
+    temperature = "red"
+    return render_template("display.html",weather = weather, humidity = humidity, moisture = moisture, waterLevel = waterLevel, light = light, temperature = temperature)
 
 
 if __name__ == "__main__":
