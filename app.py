@@ -1,16 +1,14 @@
 from flask import Flask, redirect,render_template
-import smartPotDisplay
+from smartPotDisplay import *
+
 app = Flask(__name__)
 
+
 @app.route("/")
-def display():
-    weather = "cloud"
-    humidity = "red"
-    moisture = "red"
-    waterLevel = "red"
-    light = "red"
-    temperature = "red"
-    return render_template("display.html",weather = weather, humidity = humidity, moisture = moisture, waterLevel = waterLevel, light = light, temperature = temperature)
+def display(): 
+    return render_template("display.html",weather  = getWeather(),        humidity    = getHumiditySensor(),
+                                          moisture = getMoistureSensor(), waterLevel  = getWaterLevel(),
+                                          light    = getLightSensor(),    temperature = getTemperatureSensor())
 
 
 if __name__ == "__main__":

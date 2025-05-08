@@ -43,9 +43,9 @@ img {
 
 
 .rightIcons {
-    margin-left: 80vw;
+    margin-left: 74vw;
     position: fixed;
-    top: -130;
+    top: -175;
 }
 
 .rightIcons>div {
@@ -54,6 +54,10 @@ img {
 
 .rightIcons>div>img {
     width: 18vw
+}
+
+.temperatureIcon {
+    right: 7.5vw;
 }
 
 /*-------Sensor Indicators------*/
