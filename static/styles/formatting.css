@@ -1,5 +1,5 @@
 html {
-    background-color: skyblue;
+    background-color: rgb(181, 234, 255);
     max-width: 600px;
     max-height: 448px;
 }
@@ -25,13 +25,11 @@ img {
     position: absolute;
     z-index: 5;
     word-wrap: normal;
-    padding-top: -5%;
-    padding-left: 0%;
+    top: -10;
+    left: -5;
+    opacity: 0.7;
 }
 
-.time>h1 {
-    border: solid 10px black;
-}
 
 
 /*-------Sensor Indicators------*/

@@ -12,7 +12,7 @@ def display():
     return render_template("display.html",weather = weather,        humidity    = getHumiditySensor(),
                                           moisture = getMoistureSensor(), waterLevel  = getWaterLevel(),
                                           light    = getLightSensor(),    temperature = getTemperatureSensor(),
-                                          time = getTime(), timeColour = timeColour)
+                                          time = getTime(), timeColour = 'style = color:' + timeColour)
 
 
 if __name__ == "__main__":
