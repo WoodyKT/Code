@@ -1,4 +1,4 @@
-import random
+import random, python_weather
 
 
 
@@ -16,11 +16,15 @@ def simulateWeatherData():
     weather = ["cloudy","sunnyCloud","foggy","rainy","snowy","stormy","sunny","sunnyRain"]
     return weather[random.randint(0,7)]
 
+#def getWeatherAPI() -> None:
+#    with python_weather.client(unit = python_weather.METRIC) as client:
+#        weather =  client.get("London")
+#        print(weather.forecast.kind)
 
 
 
 def getWeather():
-
+#    getWeatherAPI()
     return simulateWeatherData()
 
 
