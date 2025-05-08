@@ -1,4 +1,5 @@
 import random, python_weather
+from datetime import datetime
 
 
 
@@ -11,10 +12,12 @@ def simulateSensorData():
         return "orange"
     else:
         return "green"
-            
+    
 def simulateWeatherData():
     weather = ["cloudy","sunnyCloud","foggy","rainy","snowy","stormy","sunny","sunnyRain"]
-    return weather[random.randint(0,7)]
+    colours = ["darkBlue","white","white","white","white","white","orange","white"]
+    choice = random.randint(0,7)
+    return weather[choice],colours[choice]
 
 #def getWeatherAPI() -> None:
 #    with python_weather.client(unit = python_weather.METRIC) as client:
@@ -26,6 +29,7 @@ def simulateWeatherData():
 def getWeather():
 #    getWeatherAPI()
     return simulateWeatherData()
+
 
 
 def getLightSensor():
@@ -47,3 +51,8 @@ def getWaterLevel():
 def getTemperatureSensor():
     indicator = simulateSensorData()
     return indicator
+
+def getTime(): return datetime.now().strftime("%H:%M")
+
+
+    
