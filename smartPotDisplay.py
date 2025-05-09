@@ -15,7 +15,7 @@ def simulateSensorData():
     
 def simulateWeatherData():
     weather = ["cloudy",  "sunnyCloud","foggy",   "rainy","snowy",    "stormy","sunny", "sunnyRain"]
-    colours = ["darkBlue","yellow",    "darkBlue","white","darkBlue","white", "orange","white"]
+    colours = ["darkBlue","orange",    "darkBlue","white","darkBlue","white", "orange","white"]
     choice = random.randint(0,7)
     return weather[choice],colours[choice]
 
