@@ -1,0 +1,3 @@
+from smartPotDisplay import *
+
+render()

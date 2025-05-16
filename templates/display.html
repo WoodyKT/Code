@@ -1,4 +1,18 @@
 <html lang="en">
+<meta id="refresh" http-equiv="refresh" content="15">
+<style>
+    .debug {
+        position: absolute;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 50px;
+        color: rgb(0, 0, 0);
+        flex-wrap: nowrap;
+        font-weight: bold;
+        animation-name: debugAnimation;
+        animation-duration: 5s;
+        animation-iteration-count: infinite;
+    }
+</style>
 
 <head>
     <title>Smart Pot Display</title>
@@ -13,18 +27,45 @@
     <div class="sensorIcons">
 
         <div class="leftIcons">
-            <div><img class="humidityIcon" src="../static/images/humidity/{{humidity}}.png"></div>
-            <div><img class="moistureIcon" src="../static/images/moisture/{{moisture}}.png"></div>
+            <div><img class="humidityIcon" src="../static/images/humidity/{{humidity}}.png">
+                <p class="debug" id="debug">{{humidityValue}}</p>
+            </div>
+            <div><img class="moistureIcon" src="../static/images/moisture/{{moisture}}.png">
+                <p class="debug" id="debug">{{moistureValue}}</p>
+            </div>
         </div>
 
         <div class="rightIcons">
-            <div> <img class="waterIcon" src="../static/images/waterLevel/{{waterLevel}}.png"></div>
-            <div><img class="lightIcon" src="../static/images/light/{{light}}.png"></div>
-            <div><img class="temperatureIcon" src="../static/images/temperature/{{temperature}}.png"></div>
+            <div> <img class="waterIcon" src="../static/images/waterLevel/{{water}}.png">
+                <p class="debug" id="debug">{{waterValue}}</p>
+            </div>
+            <div><img class="lightIcon" src="../static/images/light/{{light}}.png">
+                <p class="debug" id="debug">{{lightValue}}</p>
+            </div>
+            <div><img class="temperatureIcon" src="../static/images/temperature/{{temperature}}.png">
+                <p class="debug" id="debug">{{waterValue}}</p>
+            </div>
         </div>
     </div>
+    <p class="debug" id="debug" style="top: 0%;left: 2%;">debug</p>
+    <button onclick="toggleDebug()">aaaaaa</button>
 </body>
 
 
 
 </html>
+<script>
+    var debug = false;
+    var opacity = "0";
+
+    function toggleDebug() {
+        items = document.querySelectorAll(".debug");
+        debug = !debug;
+        if (debug) { opacity = 100; } else { opacity = "0" }
+        for (i of items) {
+            i.style.opacity = opacity;
+        }
+        document.getElementById("refresh").content;
+    }
+
+</script>

@@ -3,15 +3,16 @@ from datetime import datetime
 
 
 
+
 def simulateSensorData():
     data = random.randint(1,1000)
     
     if data<100 or data>900:
-        return "red"
+        return "red",data
     elif data <250 or data>750:
-        return "orange"
+        return "orange",data
     else:
-        return "green"
+        return "green",data
     
 def simulateWeatherData():
     weather = ["cloudy",  "sunnyCloud","foggy",   "rainy","snowy",    "stormy","sunny", "sunnyRain"]
@@ -33,26 +34,32 @@ def getWeather():
 
 
 def getLightSensor():
-    indicator = simulateSensorData()    
-    return indicator
+    indicator, value = simulateSensorData()    
+    return indicator, value
 
 def getMoistureSensor():
-    indicator = simulateSensorData()
-    return indicator
+    indicator, value = simulateSensorData()
+    return indicator, value
 
 def getHumiditySensor():
-    indicator = simulateSensorData()
-    return indicator
+    indicator, value = simulateSensorData()
+    return indicator, value
 
 def getWaterLevel():
-    indicator = simulateSensorData()
-    return indicator
+    indicator, value = simulateSensorData()
+    return indicator, value
 
 def getTemperatureSensor():
-    indicator = simulateSensorData()
-    return indicator
+    indicator, value = simulateSensorData()
+    return indicator, value
 
 def getTime(): return datetime.now().strftime("%H:%M")
+
+
+    
+    
+
+
 
 
     

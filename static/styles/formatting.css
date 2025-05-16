@@ -74,3 +74,36 @@ img {
 }
 
 /*-------Sensor Indicators------*/
+
+
+
+@keyframes debugAnimation {
+
+    0% {
+        color: red;
+    }
+
+    20% {
+        color: orange;
+    }
+
+    40% {
+        color: yellow;
+    }
+
+    60% {
+        color: green;
+    }
+
+    80% {
+        color: blue;
+    }
+
+    90% {
+        color: indigo;
+    }
+
+    100% {
+        color: red;
+    }
+}
