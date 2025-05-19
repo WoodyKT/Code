@@ -1,0 +1,4 @@
+-change refresh rate with debug
+-make work with sensors
+-save and upload screenshot to screen
+-maybe change more to be js
