@@ -5,12 +5,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 class dataControls:
     _data = ["light","humidity","moisture","temperature","waterLevel"]
 
-    def SimulateWeatherData(self):
-        weather = ["cloudy",  "sunnyCloud","foggy",   "rainy","snowy",    "stormy","sunny", "sunnyRain"]
-        colours = ["darkBlue","orange",    "darkBlue","white","darkBlue","white", "orange","white"]
-        choice = random.randint(0,7)
-        return weather[choice],colours[choice]
-    
     #Write data in csv format to file
     def WriteData(self, simulated):
         with open("static/sensorData.txt","w") as w:
