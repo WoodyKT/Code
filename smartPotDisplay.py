@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 class dataControls:
-    _data = ["light","humidity","moisture","temperature"]
+    _data = ["light","humidity","moisture","temperature","waterLevel"]
 
     def SimulateWeatherData(self):
         weather = ["cloudy",  "sunnyCloud","foggy",   "rainy","snowy",    "stormy","sunny", "sunnyRain"]
