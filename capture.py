@@ -3,7 +3,7 @@ import time
 import requests
 from pyppeteer import launch
 
-async def take_screenshot():
+async def TakeScreenshot():
     # Wait until server responds
     url = 'http://localhost:5000'
     for _ in range(10):
@@ -27,4 +27,5 @@ async def take_screenshot():
     await page.screenshot({'path': 'screenshot.png'})
     await browser.close()
 
-asyncio.run(take_screenshot())
+asyncio.run(TakeScreenshot())
+print("Saved")

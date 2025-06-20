@@ -1,6 +1,5 @@
 from flask import Flask,render_template
 from smartPotDisplay import *
-import subprocess
 
 app = Flask(__name__)
 simulated = True
@@ -19,6 +18,6 @@ def display():
 
 if __name__ == "__main__":
     dataControl = dataControls()
-    app.run(debug=True)
+    app.run(debug=False,use_reloader=False)
    # subprocess.run(["python", "capture.py"])
 
