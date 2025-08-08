@@ -4,7 +4,6 @@ import requests
 from pyppeteer import launch
 
 async def TakeScreenshot():
-    # Wait until server responds
     url = 'http://localhost:5000'
     for _ in range(10):
         try:
@@ -18,7 +17,7 @@ async def TakeScreenshot():
 
     browser = await launch(
         headless=True,
-        executablePath='C:/Program Files/Google/Chrome/Application/chrome.exe',
+        executablePath='/usr/bin/chromium-browser',
         args=['--no-sandbox']
     )
     page = await browser.newPage()
