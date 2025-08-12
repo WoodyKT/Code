@@ -46,7 +46,7 @@ async def take_screenshot():
 
     browser = await launch(
         headless=True,
-        executablePath='/woody/bin/chromium-browser',
+        executablePath='/usr/bin/chromium-browser',
         args=['--no-sandbox']
     )
     page = await browser.newPage()
