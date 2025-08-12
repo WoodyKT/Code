@@ -1,2 +1,2 @@
 -make work with sensors
--save and upload screenshot to screen
+-screenshot work with pi
