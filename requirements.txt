@@ -1,0 +1,6 @@
+Flask
+apscheduler
+requests
+pyppeteer
+Pillow
+inky[rpi]
