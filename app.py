@@ -39,7 +39,7 @@ async def take_screenshot():
             if r.status_code == 200:
                 break
         except requests.exceptions.RequestException:
-            time.sleep(1)
+            await asyncio.sleep(1)
     else:
         print("Server not reachable")
         return
@@ -65,20 +65,21 @@ def update_inky(image_path):
     inky_display.show()
     print("Inky display updated.")
 
-def capture_and_display():
-    asyncio.run(take_screenshot())
-    update_inky(OUTPUT_PATH)
-
-def start_capture_loop():
+async def capture_loop():
     while True:
-        capture_and_display()
-        time.sleep(5)  
+        await take_screenshot()
+        update_inky(OUTPUT_PATH)
+        await asyncio.sleep(5)
 
 if __name__ == "__main__":
     dataControl = dataControls()
 
-    # Start the capture/display loop in a background thread
-    threading.Thread(target=start_capture_loop, daemon=True).start()
+    # Start the sensor update scheduler
+    schedule.start()
 
-    # Run Flask accessible to all devices
-    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+    # Start Flask in a background thread so it doesn't block asyncio loop
+    flask_thread = threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False), daemon=True)
+    flask_thread.start()
+
+    # Run the async capture loop in the main thread event loop
+    asyncio.run(capture_loop())
