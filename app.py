@@ -83,7 +83,7 @@ async def capture_loop():
 if __name__ == "__main__":
     if sys.argv[1] == "sim":
         simulated = True
-    dataControl = dataControls()
+    dataControl = dataControls(simulated)
 
     # Start the sensor update scheduler
     schedule.start()
