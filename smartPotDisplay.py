@@ -38,10 +38,10 @@ class dataControls:
                 ])
             w.write(output)
             pumpTime = 0
-            if self.humidity <0.4:
+            if self.humidity.sensor.value <0.4:
                 print("Low humidity, activating pump")
                 pumpTime+=2
-            elif self.moisture <0.3:
+            elif self.moisture.sensor.value <0.3:
                 print("Low moisture, activating pump")
                 pumpTime+=4
             if not pumpTime==0:
