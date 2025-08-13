@@ -20,7 +20,6 @@ def UpdateSensorFile():
 # Background job to update sensor file
 schedule = BackgroundScheduler()
 schedule.add_job(UpdateSensorFile, 'interval', seconds=1)
-schedule.start()
 
 @app.route("/")
 def display():
@@ -45,10 +44,15 @@ async def take_screenshot():
         return
 
     browser = await launch(
-        headless=True,
-        executablePath='/usr/bin/chromium-browser',
-        args=['--no-sandbox']
-    )
+    headless=True,
+    executablePath='/usr/bin/chromium-browser',
+    args=[
+        '--no-sandbox',
+        '--disable-gpu',
+        '--disable-dev-shm-usage'
+    ]
+)
+
     page = await browser.newPage()
     await page.setViewport({'width': 980, 'height': 797})
     await page.goto(URL, waitUntil='networkidle2')
@@ -67,6 +71,7 @@ def update_inky(image_path):
 
 async def capture_loop():
     while True:
+        await asyncio.sleep(3)
         await take_screenshot()
         update_inky(OUTPUT_PATH)
         await asyncio.sleep(5)
