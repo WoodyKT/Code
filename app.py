@@ -9,6 +9,7 @@ import requests
 from pyppeteer import launch
 from PIL import Image
 from inky.auto import auto
+import sys
 
 # Flask setup
 app = Flask(__name__)
@@ -80,6 +81,8 @@ async def capture_loop():
         await asyncio.sleep(5)
 
 if __name__ == "__main__":
+    if sys.argv[1] == "sim":
+        simulated = True
     dataControl = dataControls()
 
     # Start the sensor update scheduler
