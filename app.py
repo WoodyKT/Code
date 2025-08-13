@@ -12,7 +12,7 @@ from inky.auto import auto
 
 # Flask setup
 app = Flask(__name__)
-simulated = True
+simulated = False
 
 def UpdateSensorFile():
     dataControl.WriteData(simulated)
@@ -62,12 +62,15 @@ async def take_screenshot():
 
 def update_inky(image_path):
     print("Updating Inky Impression display...")
-    inky_display = auto()
-    img = Image.open(image_path).convert("RGB")
-    img = img.resize(inky_display.resolution)
-    inky_display.set_image(img)
-    inky_display.show()
-    print("Inky display updated.")
+    try:
+        inky_display = auto()
+        img = Image.open(image_path).convert("RGB")
+        img = img.resize(inky_display.resolution)
+        inky_display.set_image(img)
+        inky_display.show()
+        print("Inky display updated.")
+    except:
+        print("Error, likely no inky screen connected")
 
 async def capture_loop():
     while True:

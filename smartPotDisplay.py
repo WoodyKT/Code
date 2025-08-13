@@ -1,4 +1,6 @@
 from gpiozero import MCP3008
+import RPi.GPIO
+import time
 
 class dataControls:
     _data = ["light", "humidity", "moisture", "temperature", "waterLevel"]
@@ -11,6 +13,13 @@ class dataControls:
         self.moisture   = MCP3008(channel=2)  # Soil moisture sensor
         self.temperature= MCP3008(channel=3)  # Temperature sensor
         self.waterLevel = MCP3008(channel=4)  # Water level sensor
+        self.pumpPin = 26
+
+    def ActivatePump(self, pumpTime):
+        RPi.GPIO.output(self.pumpPin,RPi.GPIO.HIGH)
+        time.sleep(pumpTime)
+        RPi.GPIO.output(self.pumpPin,RPi.GPIO.LOW)
+
 
     def WriteData(self, simulated=True):
         with open("static/sensorData.txt", "w") as w:
@@ -28,3 +37,12 @@ class dataControls:
                     self.waterLevel
                 ])
             w.write(output)
+            pumpTime = 0
+            if self.humidity <0.4:
+                print("Low humidity, activating pump")
+                pumpTime+=2
+            elif self.moisture <0.3:
+                print("Low moisture, activating pump")
+                pumpTime+=4
+            if not pumpTime==0:
+                self.ActivatePump(pumpTime)
