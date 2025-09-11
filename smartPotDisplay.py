@@ -9,11 +9,11 @@ class dataControls:
         # Map each sensor to a MCP3008 channel
         # Channels: 0..7
         if not simulated:
-            self.light      = MCP3008(channel=0)  # Light sensor
-            self.humidity   = MCP3008(channel=1)  # Humidity sensor
-            self.moisture   = MCP3008(channel=2)  # Soil moisture sensor
-            self.temperature= MCP3008(channel=3)  # Temperature sensor
-            self.waterLevel = MCP3008(channel=4)  # Water level sensor
+            self.light      = MCP3008(channel=0,select_pin =15, mosi_pin =16,  miso_pin = 17)  # Light sensor
+            self.humidity   = MCP3008(channel=1,select_pin =15, mosi_pin =16,  miso_pin = 17)  # Humidity sensor
+            self.moisture   = MCP3008(channel=2,select_pin =15, mosi_pin =16,  miso_pin = 17)  # Soil moisture sensor
+            self.temperature= MCP3008(channel=3,select_pin =15, mosi_pin =16,  miso_pin = 17)  # Temperature sensor
+            self.waterLevel = MCP3008(channel=4,select_pin =15, mosi_pin =16,  miso_pin = 17)  # Water level sensor
             self.pumpPin = 26
 
     def ActivatePump(self, pumpTime):
