@@ -1,9 +1,7 @@
 from flask import Flask, render_template
 from smartPotDisplay import *
 from apscheduler.schedulers.background import BackgroundScheduler
-import subprocess
 import threading
-import time
 import asyncio
 import requests
 from pyppeteer import launch
@@ -81,9 +79,7 @@ async def capture_loop():
         await asyncio.sleep(5)
 
 if __name__ == "__main__":
-    if sys.argv[1] == "sim":
-        simulated = True
-    dataControl = dataControls(simulated)
+    dataControl = dataControls()
 
     # Start the sensor update scheduler
     schedule.start()
