@@ -25,7 +25,7 @@ def display():
     return render_template("display.html")
 
 # Screenshot + Inky update
-PI_IP = "192.168.137.134"  # Your Pi's IP on network
+PI_IP = "192.168.137.126"  # Your Pi's IP on network
 URL = f"http://{PI_IP}:5000"
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 
