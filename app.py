@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import threading
 import asyncio
 import requests
-from pyppeteer import launch
+from pyppeteer2 import launch
 from PIL import Image
 from inky.auto import auto
 import time
@@ -31,6 +31,7 @@ OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 
 async def take_screenshot():
     # Wait until server responds
+    print("attempting screenshot")
     for _ in range(10):
         try:
             r = requests.get(URL)
