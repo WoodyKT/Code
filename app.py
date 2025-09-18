@@ -7,7 +7,7 @@ import requests
 from pyppeteer import launch
 from PIL import Image
 from inky.auto import auto
-import sys
+import time
 
 # Flask setup
 app = Flask(__name__)
@@ -18,7 +18,7 @@ def UpdateSensorFile():
 
 # Background job to update sensor file
 schedule = BackgroundScheduler()
-schedule.add_job(UpdateSensorFile, 'interval', seconds=1)
+schedule.add_job(UpdateSensorFile, 'interval', seconds=5)
 
 @app.route("/")
 def display():
@@ -51,7 +51,7 @@ async def take_screenshot():
         '--disable-dev-shm-usage'
     ]
 )
-
+    print("waiting for page")
     page = await browser.newPage()
     await page.setViewport({'width': 980, 'height': 797})
     await page.goto(URL, waitUntil='networkidle2')
@@ -87,6 +87,7 @@ if __name__ == "__main__":
     # Start Flask in a background thread so it doesn't block asyncio loop
     flask_thread = threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False), daemon=True)
     flask_thread.start()
+    time.sleep(2)
 
     # Run the async capture loop in the main thread event loop
     asyncio.run(capture_loop())
