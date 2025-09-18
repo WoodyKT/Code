@@ -43,55 +43,67 @@ def wait_for_flask(url, timeout=15):
     return False
 
 async def take_screenshot():
-    # Wait until server responds
-    print("attempting screenshot")
-    for _ in range(10):
+    print("[DEBUG] Starting screenshot task...")
+
+    # Wait until Flask server responds
+    for i in range(10):
         try:
             r = requests.get(URL)
             if r.status_code == 200:
+                print(f"[DEBUG] Flask responded, proceeding with screenshot (attempt {i+1})")
                 break
         except requests.exceptions.RequestException:
-            await asyncio.sleep(1)
+            print(f"[DEBUG] Flask not reachable, retry {i+1}/10")
+        await asyncio.sleep(1)
     else:
-        print("Server not reachable")
+        print("[ERROR] Flask server not reachable after 10 attempts, skipping screenshot")
         return
 
-    browser = await launch(
-    headless=True,
-    executablePath='/usr/bin/chromium-browser',
-    args=[
-        '--no-sandbox',
-        '--disable-gpu',
-        '--disable-dev-shm-usage'
-    ]
-)
-    print("waiting for page")
-    page = await browser.newPage()
-    await page.setViewport({'width': 980, 'height': 797})
-    await page.goto(URL, waitUntil='networkidle2')
-    await page.screenshot({'path': OUTPUT_PATH})
-    await browser.close()
-    print(f"Saved screenshot to {OUTPUT_PATH}")
+    # Launch Chromium
+    try:
+        browser = await launch(
+            headless=True,
+            executablePath='/usr/bin/chromium',  # adjust if needed
+            args=['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+        )
+        print("[DEBUG] Chromium launched successfully")
+    except Exception as e:
+        print(f"[ERROR] Failed to launch Chromium: {e}")
+        return
+
+    # Open page and take screenshot
+    try:
+        page = await browser.newPage()
+        await page.setViewport({'width': 980, 'height': 797})
+        await page.goto(URL, waitUntil='networkidle2')
+        await page.screenshot({'path': OUTPUT_PATH})
+        await browser.close()
+        print(f"[DEBUG] Screenshot saved to {OUTPUT_PATH}")
+    except Exception as e:
+        print(f"[ERROR] Failed to take screenshot: {e}")
+        return
 
 def update_inky(image_path):
-    print("Updating Inky Impression display...")
     try:
+        print("[DEBUG] Updating Inky display...")
         inky_display = auto()
         img = Image.open(image_path).convert("RGB")
         img = img.resize(inky_display.resolution)
         inky_display.set_image(img)
         inky_display.show()
-        print("Inky display updated.")
+        print("[DEBUG] Inky display updated successfully")
+    except FileNotFoundError:
+        print(f"[ERROR] Screenshot not found at {image_path}")
     except Exception as e:
-        print(f"Error updating Inky display: {e}")
+        print(f"[ERROR] Failed to update Inky display: {e}")
 
 async def capture_loop():
     while True:
-        await asyncio.sleep(3)
+        await asyncio.sleep(3)  # small delay before first capture
         await take_screenshot()
         update_inky(OUTPUT_PATH)
+        print("[DEBUG] Waiting 60 seconds until next capture")
         await asyncio.sleep(60)
-
 if __name__ == "__main__":
     dataControl = dataControls()
 
