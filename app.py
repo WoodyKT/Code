@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import threading
 import asyncio
 import requests
-from pyppeteer2 import launch
+from pyppeteer import launch
 from PIL import Image
 from inky.auto import auto
 import time
@@ -69,8 +69,8 @@ def update_inky(image_path):
         inky_display.set_image(img)
         inky_display.show()
         print("Inky display updated.")
-    except:
-        print("Error, likely no inky screen connected")
+    except Exception as e:
+        print(f"Error updating Inky display: {e}")
 
 async def capture_loop():
     while True:
@@ -93,4 +93,6 @@ if __name__ == "__main__":
     # Run the async capture loop in the main thread event loop
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(capture_loop())
+    loop.create_task(capture_loop())
+    loop.run_forever()
+
