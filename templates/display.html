@@ -109,8 +109,8 @@
    
    
    function getColor(value) {
-   if (value<250 || value >750) return "red";
-   if (value < 400 || value > 600) return "orange";
+   if (value<25)return "red";
+   if (value < 200) return "orange";
    return "green";
    }
    
@@ -153,7 +153,7 @@
    
    function UpdateWeather() {
    const apiKey = "99d05d20435a20010a1a2f22deb59bc0";  // <-- Replace with your actual API key
-   const city = "Madrid";          // <-- Or use coordinates
+   const city = "Coventry";          // <-- Or use coordinates
    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
    
    fetch(url)
