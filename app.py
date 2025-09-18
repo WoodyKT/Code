@@ -27,7 +27,6 @@ def display():
 # Screenshot + Inky update
 PI_IP = "192.168.137.134"  # Your Pi's IP on network
 URL = f"http://{PI_IP}:5000"
-OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 
 async def take_screenshot():
     # Wait until server responds
@@ -59,11 +58,11 @@ async def take_screenshot():
     await browser.close()
     print(f"Saved screenshot to {OUTPUT_PATH}")
 
-def update_inky(image_path):
+def update_inky():
     print("Updating Inky Impression display...")
     try:
         inky_display = auto()
-        img = Image.open(image_path).convert("RGB")
+        img = Image.open("screenshot.png").convert("RGB")
         img = img.resize(inky_display.resolution)
         inky_display.set_image(img)
         inky_display.show()
@@ -75,8 +74,8 @@ async def capture_loop():
     while True:
         await asyncio.sleep(3)
         await take_screenshot()
-        update_inky(OUTPUT_PATH)
-        await asyncio.sleep(5)
+        update_inky()
+        await asyncio.sleep(60)
 
 if __name__ == "__main__":
     dataControl = dataControls()
