@@ -14,7 +14,7 @@ app = Flask(__name__)
 simulated = False
 
 def UpdateSensorFile():
-    dataControl.WriteData(simulated)
+    dataControl.WriteData()
 
 # Background job to update sensor file
 schedule = BackgroundScheduler()
