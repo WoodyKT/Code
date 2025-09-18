@@ -29,6 +29,19 @@ PI_IP = "192.168.137.126"  # Your Pi's IP on network
 URL = f"http://{PI_IP}:5000"
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 
+def wait_for_flask(url, timeout=15):
+    for _ in range(timeout):
+        try:
+            r = requests.get(url)
+            if r.status_code == 200:
+                print("Flask is up!")
+                return True
+        except requests.exceptions.RequestException:
+            pass
+        time.sleep(1)
+    print("Flask server never became available")
+    return False
+
 async def take_screenshot():
     # Wait until server responds
     print("attempting screenshot")
@@ -88,7 +101,8 @@ if __name__ == "__main__":
     # Start Flask in a background thread so it doesn't block asyncio loop
     flask_thread = threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False), daemon=True)
     flask_thread.start()
-    time.sleep(2)
+    if not wait_for_flask(URL):
+        exit(1)
 
     # Run the async capture loop in the main thread event loop
     loop = asyncio.new_event_loop()
