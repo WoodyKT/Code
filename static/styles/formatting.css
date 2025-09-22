@@ -35,55 +35,31 @@ html, body {
     z-index: 5;
 }
 
-/* ---------- Left Icons ---------- */
-.leftIcons {
-    position: absolute;
-    top: 50%;          /* vertical start */
-    left: 10%;          /* distance from left edge */
+.leftIcons, .rightIcons {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 60%;       /* total vertical space for icons */
-}
-
-.leftIcons > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.leftIcons img {
-    width: 16%;        /* proportional to container width */
-    height: auto;
-}
-
-/* ---------- Right Icons ---------- */
-.rightIcons {
-    position: absolute;
-    top: 10%;           /* start near top */
-    bottom: 10%;        /* end near bottom */
-    right: 5%;         /* distance from right edge */
-    display: flex;
-    flex-direction: column;      /* stack vertically */
-    justify-content: space-between; /* evenly distribute vertically */
-    align-items: center;         /* center icons horizontally */
-}
-
-.rightIcons > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.rightIcons img {
-    width: 16%;        /* proportional to container width */
-    height: auto;
+    justify-content: flex-start;  /* stack from top */
+    gap: 10px;                    /* vertical spacing */
+    align-items: center;          /* center horizontally */
 }
 
 .leftIcons img, .rightIcons img {
-    width: 160x;  /* adjust until readable */
+    width: 80px;  /* adjust as needed */
     height: auto;
 }
+
+.rightIcons {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+}
+
+.leftIcons {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+}
+
 
 
 /* ---------- Debug Animation ---------- */
