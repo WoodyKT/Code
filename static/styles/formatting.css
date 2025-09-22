@@ -57,20 +57,25 @@ img {
 }
 
 .rightIcons {
-    position: absolute; /* instead of fixed */
-    top: 30%;           /* adjust to align vertically */
-    right: 5%;          /* position from right edge */
-    margin-left: 0;     /* remove large left margin */
+    position: absolute;   /* inside #container */
+    top: 32%;             /* adjust vertical placement */
+    right: 5%;            /* distance from container right edge */
+    display: flex;
+    flex-direction: column;
+    gap: 3%;              /* space between icons */
 }
 
-
-.rightIcons>div {
-	padding-top: 30vh;
+.rightIcons > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.rightIcons>div>img {
-	width: 18vw
+.rightIcons img {
+    width: 16%;           /* scales with container width */
+    height: auto;
 }
+
 
 .temperatureIcon {
 	right: 7.5vw;
