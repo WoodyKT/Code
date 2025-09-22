@@ -7,6 +7,7 @@ import requests
 import time
 from PIL import Image
 from inky.auto import auto
+import os
 
 # Flask setup
 app = Flask(__name__)
@@ -46,9 +47,15 @@ def wait_for_flask(url, timeout=15):
 def take_screenshot_cli(url, output_path, width=980, height=797):
     try:
         print("[DEBUG] Taking screenshot via Chromium CLI...")
+
+        # Remove old screenshot if it exists
+        if os.path.exists(output_path):
+            os.remove(output_path)
+            print(f"[DEBUG] Old screenshot removed: {output_path}")
+
         result = subprocess.run(
             [
-                "chromium-browser",  # or "chromium" depending on your system
+                "chromium-browser",  # or "chromium" on some installs
                 "--headless",
                 "--disable-gpu",
                 f"--screenshot={output_path}",
@@ -59,7 +66,7 @@ def take_screenshot_cli(url, output_path, width=980, height=797):
             text=True,
             timeout=30
         )
-        if result.returncode == 0:
+        if result.returncode == 0 and os.path.exists(output_path):
             print(f"[DEBUG] Screenshot saved to {output_path}")
         else:
             print("[ERROR] Chromium CLI failed:")
