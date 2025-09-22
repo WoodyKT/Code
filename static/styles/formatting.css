@@ -80,6 +80,12 @@ html, body {
     height: auto;
 }
 
+.leftIcons img, .rightIcons img {
+    width: 80px;  /* adjust until readable */
+    height: auto;
+}
+
+
 /* ---------- Debug Animation ---------- */
 @keyframes debugAnimation {
     0%   { color: #FF0000; }
