@@ -2,7 +2,8 @@ from inky.auto import auto
 from PIL import Image
 import sys
 
-if sys.argv ==2:
+print(sys.argv[0:])
+if len(sys.argv == 2):
     print("Updating Inky Impression display...")
     print(f"Image: {sys.argv[1]}")
     try:
@@ -14,3 +15,5 @@ if sys.argv ==2:
         print("Inky display updated.")
     except:
         print("Error, likely no inky screen connected")
+else:
+    print("Enter a picture")
