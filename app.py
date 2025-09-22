@@ -2,18 +2,18 @@ from flask import Flask, render_template
 from smartPotDisplay import *
 from apscheduler.schedulers.background import BackgroundScheduler
 import threading
-import subprocess
+import asyncio
 import requests
-import time
+from pyppeteer import launch
 from PIL import Image
 from inky.auto import auto
 import os
-import asyncio
+import time
 
 # Flask setup
 app = Flask(__name__)
 
-# Screenshot and Flask settings
+# Screenshot settings
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 LOCAL_URL = "http://127.0.0.1:5000"
 LAN_URL = "http://192.168.137.126:5000"
@@ -31,7 +31,7 @@ def UpdateSensorFile():
 schedule = BackgroundScheduler()
 schedule.add_job(UpdateSensorFile, 'interval', seconds=5)
 
-# Check Flask availability
+# Wait for Flask server to start
 def wait_for_flask(url, timeout=15):
     for _ in range(timeout):
         try:
@@ -43,48 +43,6 @@ def wait_for_flask(url, timeout=15):
             pass
         time.sleep(1)
     return False
-
-# Take screenshot using Chromium headless
-def take_screenshot_chromium(url, output_path, width=980, height=797, delay_ms=5000):
-    try:
-        print("[DEBUG] Taking screenshot via Chromium headless...")
-        if os.path.exists(output_path):
-            os.remove(output_path)
-
-        result = subprocess.run(
-            [
-                "chromium-browser",      # or "chromium" on some installs
-                "--headless",
-                "--no-sandbox",
-                "--disable-gpu",
-                f"--window-size={width},{height}",
-                f"--virtual-time-budget={delay_ms}",  # wait for JS execution
-                f"--screenshot={output_path}",
-                url
-            ],
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
-
-        if result.returncode == 0 and os.path.exists(output_path):
-            size = os.path.getsize(output_path)
-            print(f"[DEBUG] Screenshot saved ({size} bytes)")
-            if size < 10 * 1024:
-                print("[WARN] Screenshot too small, likely blank")
-                return False
-            return True
-        else:
-            print("[ERROR] Chromium failed to create screenshot")
-            print("[DEBUG] STDERR:", result.stderr.strip())
-            return False
-
-    except FileNotFoundError:
-        print("[ERROR] chromium-browser not found. Install with: sudo apt install chromium-browser")
-        return False
-    except subprocess.TimeoutExpired:
-        print("[ERROR] Chromium timed out while taking screenshot")
-        return False
 
 # Update Inky display
 def update_inky(image_path):
@@ -101,11 +59,34 @@ def update_inky(image_path):
     except Exception as e:
         print(f"[ERROR] Failed to update Inky display: {e}")
 
-# Capture loop
+# Take screenshot with pyppeteer
+async def take_screenshot_pyppeteer(url, output_path, width=980, height=797):
+    try:
+        print("[DEBUG] Launching Chromium via pyppeteer...")
+        browser = await launch(headless=True,
+                               args=['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'])
+        page = await browser.newPage()
+        await page.setViewport({'width': width, 'height': height})
+        await page.goto(url, waitUntil='networkidle2')  # wait for JS to finish
+
+        # Wait for elements we know must be loaded
+        await page.waitForSelector('.time', timeout=10000)
+        await page.waitForSelector('.weatherIcon', timeout=10000)
+
+        # Take screenshot
+        await page.screenshot({'path': output_path})
+        await browser.close()
+        print(f"[DEBUG] Screenshot saved to {output_path}")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to take screenshot: {e}")
+        return False
+
+# Async capture loop
 async def capture_loop():
     while True:
-        await asyncio.sleep(3)  # small initial delay
-        success = take_screenshot_chromium(URL, OUTPUT_PATH)
+        await asyncio.sleep(3)  # initial delay
+        success = await take_screenshot_pyppeteer(URL, OUTPUT_PATH)
         if success:
             update_inky(OUTPUT_PATH)
         else:
@@ -117,14 +98,13 @@ if __name__ == "__main__":
     dataControl = dataControls()
     schedule.start()
 
-    # Start Flask in a background thread
+    # Start Flask in background thread
     flask_thread = threading.Thread(
         target=lambda: app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False),
         daemon=True
     )
     flask_thread.start()
 
-    # Short delay to let Flask start
     time.sleep(2)
 
     # Pick working URL
