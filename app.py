@@ -25,7 +25,7 @@ def display():
     return render_template("display.html")
 
 # Screenshot + Inky update
-PI_IP = "192.168.137.126"  # Your Pi's IP on network
+PI_IP = "127.0.0.1"  # Your Pi's IP on network
 URL = f"http://{PI_IP}:5000"
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 
@@ -113,6 +113,7 @@ if __name__ == "__main__":
     # Start Flask in a background thread so it doesn't block asyncio loop
     flask_thread = threading.Thread(target=lambda: app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False), daemon=True)
     flask_thread.start()
+    time.sleep(2)
     if not wait_for_flask(URL):
         exit(1)
 
