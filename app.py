@@ -14,6 +14,7 @@ import asyncio
 # Flask setup
 # ------------------------
 app = Flask(__name__)
+weather_icon = "sunny"
 
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 URL = "http://127.0.0.1:5000"
@@ -166,19 +167,20 @@ if __name__ == "__main__":
     # Small delay for Flask to start
     time.sleep(2)
 
-    # Wait for Flask to respond
-    for i in range(10):
+   # Wait up to 20 seconds for Flask
+    for i in range(20):
         try:
-            r = requests.get(URL, timeout=1)
+            r = requests.get(URL, timeout=3)
             if r.status_code == 200:
                 print("[INFO] Flask server is ready")
                 break
-        except:
-            print("[DEBUG] Waiting for Flask...")
+        except requests.exceptions.RequestException:
+            print(f"[DEBUG] Waiting for Flask... ({i+1}/20)")
         time.sleep(1)
     else:
         print("[ERROR] Flask did not start")
         exit(1)
+
 
     # Start asyncio capture loop
     loop = asyncio.new_event_loop()
