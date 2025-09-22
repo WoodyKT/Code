@@ -3,7 +3,7 @@ from PIL import Image
 import sys
 
 print(sys.argv[0:])
-if len(sys.argv == 2):
+if len(sys.argv) == 2:
     print("Updating Inky Impression display...")
     print(f"Image: {sys.argv[1]}")
     try:
