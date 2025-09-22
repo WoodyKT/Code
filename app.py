@@ -112,14 +112,17 @@ def display():
 # ------------------------
 # Screenshot + Inky update
 # ------------------------
+WKHTML_WIDTH = 600
+WKHTML_HEIGHT = 448
+
 def take_screenshot(url=URL, output_path=OUTPUT_PATH):
     try:
         if os.path.exists(output_path):
             os.remove(output_path)
         subprocess.run([
             "wkhtmltoimage",
-            "--width", "980",
-            "--height", "797",
+            "--width", str(WKHTML_WIDTH),
+            "--height", str(WKHTML_HEIGHT),
             url,
             output_path
         ], check=True, timeout=30)
@@ -128,6 +131,7 @@ def take_screenshot(url=URL, output_path=OUTPUT_PATH):
     except Exception as e:
         print(f"[ERROR] Screenshot failed: {e}")
         return False
+
 
 
 def update_inky(image_path=OUTPUT_PATH):
