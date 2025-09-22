@@ -55,27 +55,28 @@ img {
 .leftIcons>div>img {
 	width: 16vw;
 }
-
 .rightIcons {
-    position: absolute;      /* relative to #container */
-    top: 32%;                /* adjust vertical placement */
-    right: 5%;               /* distance from container right edge */
+    position: absolute;        /* relative to container */
+    top: 5%;                   /* start near top of container */
+    bottom: 5%;                /* end near bottom */
+    right: 2%;                 /* distance from right edge */
     display: flex;
-    flex-direction: column;  /* stack vertically */
-    gap: 3%;                 /* space between icons */
-    align-items: center;     /* center icons horizontally */
+    flex-direction: column;    /* stack vertically */
+    justify-content: space-between; /* evenly space top to bottom */
+    align-items: center;       /* center icons horizontally */
 }
 
 .rightIcons > div {
     display: flex;
-    flex-direction: column;  /* stack image and label/text */
-    align-items: center;      /* center image and debug text horizontally */
+    flex-direction: column;    /* stack image and optional label */
+    align-items: center;
 }
 
 .rightIcons img {
-    width: 16%;   /* scale to container */
+    width: 16%;   /* proportional to container width */
     height: auto;
 }
+
 
 
 
