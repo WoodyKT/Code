@@ -58,8 +58,8 @@ img {
 
 .rightIcons {
     position: absolute; /* instead of fixed */
-    top: 30%;           /* adjust to align vertically */
-    right: 5%;          /* position from right edge */
+    top: 10%;           /* adjust to align vertically */
+    right: -5%;          /* position from right edge */
     margin-left: 0;     /* remove large left margin */
 }
 
