@@ -44,7 +44,7 @@ html, body {
 }
 
 .leftIcons img, .rightIcons img {
-    width: 80px;  /* adjust as needed */
+    width: 120px;  /* adjust as needed */
     height: auto;
 }
 
