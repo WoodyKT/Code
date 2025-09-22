@@ -15,7 +15,13 @@ import asyncio
 # ------------------------
 app = Flask(__name__)
 weather_icon = "sunny"
+# Inky Impression resolution
+INKY_WIDTH = 600
+INKY_HEIGHT = 448
 
+# Original viewport size you designed for in Chromium
+VIEWPORT_WIDTH = 980
+VIEWPORT_HEIGHT = 797
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 URL = "http://127.0.0.1:5000"
 
@@ -116,18 +122,33 @@ WKHTML_WIDTH = 600
 WKHTML_HEIGHT = 448
 
 def take_screenshot(url=URL, output_path=OUTPUT_PATH):
+    """
+    Take a screenshot of the Flask-rendered page using wkhtmltoimage,
+    keeping original CSS layout and scaling to Inky display.
+    """
     try:
+        # Remove previous screenshot
         if os.path.exists(output_path):
             os.remove(output_path)
+
+        # Calculate zoom factor to scale viewport to Inky resolution
+        zoom_width = INKY_WIDTH / VIEWPORT_WIDTH
+        zoom_height = INKY_HEIGHT / VIEWPORT_HEIGHT
+        zoom = min(zoom_width, zoom_height)  # maintain aspect ratio
+
+        # Run wkhtmltoimage
         subprocess.run([
             "wkhtmltoimage",
-            "--width", str(WKHTML_WIDTH),
-            "--height", str(WKHTML_HEIGHT),
+            "--width", str(VIEWPORT_WIDTH),
+            "--height", str(VIEWPORT_HEIGHT),
+            "--zoom", str(zoom),
             url,
             output_path
         ], check=True, timeout=30)
-        print("[INFO] Screenshot taken")
+
+        print(f"[INFO] Screenshot taken and scaled to {INKY_WIDTH}x{INKY_HEIGHT}")
         return True
+
     except Exception as e:
         print(f"[ERROR] Screenshot failed: {e}")
         return False
