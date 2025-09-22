@@ -9,6 +9,30 @@ from PIL import Image
 from inky.auto import auto
 import os
 import asyncio
+import RPi.GPIO as GPIO
+import os
+import time
+import threading
+
+BUTTON_A = 5  # BCM pin for Button A
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUTTON_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+def shutdown_listener():
+    print("Waiting for Inky Button A press to shutdown...")
+    try:
+        while True:
+            if GPIO.input(BUTTON_A) == 0:  # Button pressed
+                print("Button A pressed! Shutting down...")
+                os.system("sudo shutdown now")
+                break
+            time.sleep(0.1)  # debounce
+    finally:
+        GPIO.cleanup()
+
+# Run listener in a background thread
+threading.Thread(target=shutdown_listener, daemon=True).start()
 
 # ------------------------
 # Flask setup
