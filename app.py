@@ -54,17 +54,18 @@ def take_screenshot(url, output_path, width=980, height=797):
             os.remove(output_path)
 
         result = subprocess.run(
-            [
-                "wkhtmltoimage",
-                "--width", str(width),
-                "--height", str(height),
-                url,
-                output_path
-            ],
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
+    [
+        "wkhtmltoimage",
+        "--width", "980",
+        "--height", "797",
+        "--javascript-delay", "2000",  # wait 2 seconds for JS
+        url,
+        output_path
+    ],
+    capture_output=True,
+    text=True,
+    timeout=30
+)
 
         if result.returncode == 0 and os.path.exists(output_path):
             size = os.path.getsize(output_path)
