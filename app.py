@@ -9,29 +9,25 @@ from PIL import Image
 from inky.auto import auto
 import os
 import asyncio
-import RPi.GPIO as GPIO
 import os
 import time
 import threading
 
 BUTTON_A = 5  # BCM pin for Button A
+inky_display = auto()
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUTTON_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
 
 def shutdown_listener():
     print("Waiting for Inky Button A press to shutdown...")
-    try:
-        while True:
-            if GPIO.input(BUTTON_A) == 0:  # Button pressed
-                print("Button A pressed! Shutting down...")
-                os.system("sudo shutdown now")
-                break
-            time.sleep(0.1)  # debounce
-    finally:
-        GPIO.cleanup()
+    while True:
+        if inky_display.button_a:
+            print("Button A pressed! Shutting down...")
+            os.system("sudo shutdown now")
+            break
+        time.sleep(0.1)  # small delay to avoid CPU overuse
 
-# Run listener in a background thread
+# Run in background
 threading.Thread(target=shutdown_listener, daemon=True).start()
 
 # ------------------------
@@ -181,7 +177,6 @@ def take_screenshot(url=URL, output_path=OUTPUT_PATH):
 
 def update_inky(image_path=OUTPUT_PATH):
     try:
-        inky_display = auto()
         img = Image.open(image_path).convert("RGB")
         img = img.resize(inky_display.resolution)
         inky_display.set_image(img)
