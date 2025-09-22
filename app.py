@@ -64,9 +64,10 @@ class Screenshotter:
     async def launch_browser(self):
         print("[DEBUG] Launching Chromium")
         self.browser = await launch(
-            headless=True,
-            args=['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
-        )
+    executablePath='/usr/bin/chromium-browser',  # or '/usr/bin/chromium'
+    headless=True,
+    args=['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+)
         self.page = await self.browser.newPage()
         await self.page.setViewport({'width': self.width, 'height': self.height})
         await self.page.goto(self.url, waitUntil='networkidle2')
