@@ -1,8 +1,17 @@
-html {
-	background-color: rgb(181, 234, 255);
-	max-width: 600px;
-	max-height: 448px;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 980px;       /* viewport width for wkhtmltoimage */
+    height: 797px;      /* viewport height for wkhtmltoimage */
+    background-color: transparent;  /* let container handle background */
 }
+#container {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(181, 234, 255); /* light blue box */
+    position: relative;
+}
+
 
 img {
 	width: 28vw;
@@ -48,10 +57,12 @@ img {
 }
 
 .rightIcons {
-	margin-left: 74vw;
-	position: fixed;
-	top: -175;
+    position: absolute; /* instead of fixed */
+    top: 30%;           /* adjust to align vertically */
+    right: 5%;          /* position from right edge */
+    margin-left: 0;     /* remove large left margin */
 }
+
 
 .rightIcons>div {
 	padding-top: 30vh;
