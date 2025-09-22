@@ -38,8 +38,8 @@ html, body {
 /* ---------- Left Icons ---------- */
 .leftIcons {
     position: absolute;
-    top: 30%;          /* vertical start */
-    left: 5%;          /* distance from left edge */
+    top: 50%;          /* vertical start */
+    left: 10%;          /* distance from left edge */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -60,9 +60,9 @@ html, body {
 /* ---------- Right Icons ---------- */
 .rightIcons {
     position: absolute;
-    top: 5%;           /* start near top */
-    bottom: 5%;        /* end near bottom */
-    right: 2%;         /* distance from right edge */
+    top: 10%;           /* start near top */
+    bottom: 10%;        /* end near bottom */
+    right: 5%;         /* distance from right edge */
     display: flex;
     flex-direction: column;      /* stack vertically */
     justify-content: space-between; /* evenly distribute vertically */
@@ -81,7 +81,7 @@ html, body {
 }
 
 .leftIcons img, .rightIcons img {
-    width: 80px;  /* adjust until readable */
+    width: 160x;  /* adjust until readable */
     height: auto;
 }
 
