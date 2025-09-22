@@ -1,80 +1,107 @@
-/* ---------- Container ---------- */
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 600px;      /* Match Inky width */
-    height: 448px;     /* Match Inky height */
-    background-color: #b5eaff; /* Light blue for Inky */
-    overflow: hidden;
-    position: relative;
+html {
+	background-color: rgb(181, 234, 255);
+	max-width: 600px;
+	max-height: 448px;
 }
 
-/* ---------- Plant Icon ---------- */
+img {
+	width: 28vw;
+	height: fit-content;
+	position: fixed;
+}
+
 .plantIcon {
-    position: absolute;
-    width: 300px;      /* Adjust proportionally */
-    bottom: 0;
-    left: 150px;
+	width: 60vw;
+	bottom: -4vh;
+	left: 29vh;
 }
 
-/* ---------- Time ---------- */
 .time {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 80px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: #000000; /* Black for Inky */
-    z-index: 5;
-    opacity: 0.9;
+	font-size: 120px;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	color: rgb(0, 0, 0);
+	position: absolute;
+	z-index: 5;
+	word-wrap: normal;
+	top: -10;
+	left: -5;
+	opacity: 0.7;
 }
 
-/* ---------- Sensor Indicators ---------- */
+/*-------Sensor Indicators------*/
 .sensorIcons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 20px 10px;
-    position: absolute;
-    top: 150px;
+	display: flex;
+	flex-direction: column;
 }
 
-.leftIcons, .rightIcons {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+.leftIcons {
+	margin-left: 6vw;
+	padding-top: 16vh;
 }
 
-.leftIcons > div, .rightIcons > div {
-    margin-bottom: 10px;
+.leftIcons>div {
+	padding-top: 29vh;
 }
 
-.leftIcons > div > img, .rightIcons > div > img {
-    width: 80px;  /* Fixed size for Inky */
-    height: auto;
+.leftIcons>div>img {
+	width: 16vw;
+}
+
+.rightIcons {
+	margin-left: 74vw;
+	position: fixed;
+	top: -175;
+}
+
+.rightIcons>div {
+	padding-top: 30vh;
+}
+
+.rightIcons>div>img {
+	width: 18vw
 }
 
 .temperatureIcon {
-    margin-top: 5px;
+	right: 7.5vw;
 }
 
-/* ---------- Debug Animation ---------- */
+/*-------Sensor Indicators------*/
 @keyframes debugAnimation {
-    0%   { color: #FF0000; }
-    20%  { color: #FFA500; }
-    40%  { color: #FFFF00; }
-    60%  { color: #00FF00; }
-    80%  { color: #0000FF; }
-    90%  { color: #4B0082; }
-    100% { color: #FF0000; }
+	0% {
+		color: red;
+	}
+
+	20% {
+		color: orange;
+	}
+
+	40% {
+		color: yellow;
+	}
+
+	60% {
+		color: green;
+	}
+
+	80% {
+		color: blue;
+	}
+
+	90% {
+		color: indigo;
+	}
+
+	100% {
+		color: red;
+	}
 }
 
 .debugButton {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    border: none;
-    opacity: 0;
+	position: absolute;
+	bottom: 0%;
+	left: 0%;
+	height: 100%;
+	width: 100%;
+	border: none;
+	opacity: 0;
 }
