@@ -2,137 +2,186 @@ from flask import Flask, render_template
 from smartPotDisplay import *
 from apscheduler.schedulers.background import BackgroundScheduler
 import threading
-import asyncio
 import requests
-from pyppeteer import launch
+import time
+import subprocess
 from PIL import Image
 from inky.auto import auto
 import os
-import time
+import asyncio
 
+# ------------------------
 # Flask setup
+# ------------------------
 app = Flask(__name__)
 
 OUTPUT_PATH = "/home/woody/Code/screenshot.png"
-LOCAL_URL = "http://127.0.0.1:5000"
-LAN_URL = "http://192.168.137.126:5000"
-URL = None
+URL = "http://127.0.0.1:5000"
 
-@app.route("/")
-def display():
-    return render_template("display.html")
-
-# Sensor update job
-def UpdateSensorFile():
-    dataControl.WriteData()
+# ------------------------
+# Sensor + Weather
+# ------------------------
+dataControl = dataControls()
 
 schedule = BackgroundScheduler()
-schedule.add_job(UpdateSensorFile, 'interval', seconds=5)
+schedule.add_job(dataControl.WriteData, 'interval', seconds=5)
+schedule.start()
 
-def wait_for_flask(url, timeout=15):
-    for _ in range(timeout):
-        try:
-            r = requests.get(url)
-            if r.status_code == 200:
-                print(f"[INFO] Flask is up at {url}")
-                return True
-        except requests.exceptions.RequestException:
-            pass
-        time.sleep(1)
-    return False
 
-def update_inky(image_path):
+def get_weather_icon():
+    try:
+        apiKey = "99d05d20435a20010a1a2f22deb59bc0"
+        city = "Coventry"
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}"
+        res = requests.get(url, timeout=5)
+        res.raise_for_status()
+        data = res.json()
+        weather_main = data['weather'][0]['main']
+        weather_map = {
+            "Clear": "sunny",
+            "Clouds": "sunnyCloud",
+            "Rain": "rainy",
+            "Drizzle": "sunnyRain",
+            "Thunderstorm": "stormy",
+            "Snow": "snowy",
+            "Mist": "foggy",
+            "Smoke": "foggy",
+            "Haze": "foggy",
+            "Dust": "foggy",
+            "Fog": "foggy",
+            "Sand": "foggy",
+            "Ash": "foggy",
+            "Squall": "stormy",
+            "Tornado": "stormy"
+        }
+        return weather_map.get(weather_main, "sunny")
+    except Exception as e:
+        print(f"[WARN] Failed to fetch weather: {e}")
+        return "sunny"
+
+
+def get_color(value):
+    try:
+        value = int(value)
+        if value < 25:
+            return "red"
+        elif value < 200:
+            return "orange"
+        else:
+            return "green"
+    except:
+        return "green"
+
+# ------------------------
+# Flask route (server-side rendering)
+# ------------------------
+@app.route("/")
+def display():
+    # Read sensor data
+    try:
+        with open("static/sensorData.txt") as f:
+            values = f.read().strip().split(',')
+            light = values[0] if len(values) > 0 else "0"
+            humidity = values[1] if len(values) > 1 else "0"
+            moisture = values[2] if len(values) > 2 else "0"
+            temperature = values[3] if len(values) > 3 else "0"
+            water = values[4] if len(values) > 4 else "0"
+    except Exception as e:
+        print(f"[WARN] Failed to read sensor file: {e}")
+        light = humidity = moisture = temperature = water = "0"
+
+    weather_icon = get_weather_icon()
+
+    return render_template(
+        "display.html",
+        time_str=time.strftime("%H:%M"),
+        light=light,
+        humidity=humidity,
+        moisture=moisture,
+        temperature=temperature,
+        water=water,
+        light_icon=get_color(light),
+        humidity_icon=get_color(humidity),
+        moisture_icon=get_color(moisture),
+        temperature_icon=get_color(temperature),
+        water_icon=get_color(water),
+        weather_icon=weather_icon
+    )
+
+# ------------------------
+# Screenshot + Inky update
+# ------------------------
+def take_screenshot(url=URL, output_path=OUTPUT_PATH):
+    try:
+        if os.path.exists(output_path):
+            os.remove(output_path)
+        subprocess.run([
+            "wkhtmltoimage",
+            "--width", "980",
+            "--height", "797",
+            url,
+            output_path
+        ], check=True, timeout=30)
+        print("[INFO] Screenshot taken")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Screenshot failed: {e}")
+        return False
+
+
+def update_inky(image_path=OUTPUT_PATH):
     try:
         inky_display = auto()
         img = Image.open(image_path).convert("RGB")
         img = img.resize(inky_display.resolution)
         inky_display.set_image(img)
         inky_display.show()
-        print("[DEBUG] Inky updated")
+        print("[INFO] Inky display updated")
     except Exception as e:
-        print(f"[ERROR] Failed to update Inky: {e}")
+        print(f"[ERROR] Inky update failed: {e}")
 
-class Screenshotter:
-    def __init__(self, url, output_path, width=980, height=797):
-        self.url = url
-        self.output_path = output_path
-        self.width = width
-        self.height = height
-        self.browser = None
-        self.page = None
-
-    async def launch_browser(self):
-        print("[DEBUG] Launching Chromium")
-        self.browser = await launch(
-    executablePath='/usr/bin/chromium-browser',  # or '/usr/bin/chromium'
-    headless=True,
-    args=['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
-)
-        self.page = await self.browser.newPage()
-        await self.page.setViewport({'width': self.width, 'height': self.height})
-        await self.page.goto(self.url, waitUntil='networkidle2')
-        print("[DEBUG] Browser ready")
-
-    async def refresh_content_and_screenshot(self):
-        try:
-            # Trigger JS functions in the page to update data
-            await self.page.evaluate('Update(); UpdateWeather();')
-
-            # Wait for key elements to exist
-            await self.page.waitForSelector('.time', timeout=5000)
-            await self.page.waitForSelector('.weatherIcon', timeout=5000)
-
-            # Take screenshot
-            await self.page.screenshot({'path': self.output_path})
-            size = os.path.getsize(self.output_path)
-            if size < 10*1024:
-                print("[WARN] Screenshot too small, likely blank")
-                return False
-            print("[DEBUG] Screenshot saved")
-            return True
-        except Exception as e:
-            print(f"[ERROR] Screenshot failed: {e}")
-            return False
-
-    async def close_browser(self):
-        if self.browser:
-            await self.browser.close()
-            print("[DEBUG] Browser closed")
-
-async def capture_loop(screenshotter):
+# ------------------------
+# Async capture loop
+# ------------------------
+async def capture_loop():
     while True:
-        await asyncio.sleep(3)  # initial delay
-        success = await screenshotter.refresh_content_and_screenshot()
-        if success:
-            update_inky(OUTPUT_PATH)
+        await asyncio.sleep(3)  # small initial delay
+        if take_screenshot():
+            update_inky()
         else:
-            print("[ERROR] Failed screenshot, skipping Inky update")
-        await asyncio.sleep(60)
+            print("[ERROR] Screenshot failed, skipping Inky update")
+        await asyncio.sleep(60)  # repeat every 60s
 
+# ------------------------
+# Main
+# ------------------------
 if __name__ == "__main__":
-    dataControl = dataControls()
-    schedule.start()
-
+    # Start Flask in background
     flask_thread = threading.Thread(
         target=lambda: app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False),
         daemon=True
     )
     flask_thread.start()
+
+    # Small delay for Flask to start
     time.sleep(2)
 
-    if wait_for_flask(LOCAL_URL):
-        URL = LOCAL_URL
-    elif wait_for_flask(LAN_URL):
-        URL = LAN_URL
+    # Wait for Flask to respond
+    for i in range(10):
+        try:
+            r = requests.get(URL, timeout=1)
+            if r.status_code == 200:
+                print("[INFO] Flask server is ready")
+                break
+        except:
+            print("[DEBUG] Waiting for Flask...")
+        time.sleep(1)
     else:
-        print("[ERROR] Flask not reachable")
+        print("[ERROR] Flask did not start")
         exit(1)
-    print(f"[INFO] Using URL: {URL}")
 
+    # Start asyncio capture loop
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
-    screenshotter = Screenshotter(URL, OUTPUT_PATH)
-    loop.run_until_complete(screenshotter.launch_browser())
-    loop.create_task(capture_loop(screenshotter))
+    loop.create_task(capture_loop())
     loop.run_forever()

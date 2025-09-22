@@ -1,119 +1,97 @@
+/* ---------- General ---------- */
 html {
-    background-color: rgb(181, 234, 255);
+    background-color: #b5eaff; /* Light blue mapped to Inky palette */
     max-width: 600px;
     max-height: 448px;
+    position: relative;
+    overflow: hidden;
 }
 
 img {
     width: 28vw;
-    height: fit-content;
-    position: fixed;
+    height: auto;
+    position: relative;
 }
 
-
-
+/* ---------- Plant Icon ---------- */
 .plantIcon {
     width: 60vw;
-    bottom: -4vh;
-    left: 29vh;
+    bottom: 0;
+    left: 20vw;
+    position: absolute;
 }
 
+/* ---------- Time ---------- */
 .time {
-    font-size: 120px;
+    font-size: 80px; /* Reduced slightly to fit screen */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: rgb(0, 0, 0);
+    color: #000000; /* Black for Inky display */
     position: absolute;
     z-index: 5;
+    top: 5%;
+    left: 5%;
+    opacity: 0.9; /* Slightly higher for better contrast */
     word-wrap: normal;
-    top: -10;
-    left: -5;
-    opacity: 0.7;
 }
 
-
-
-/*-------Sensor Indicators------*/
-
+/* ---------- Sensor Indicators ---------- */
 .sensorIcons {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5% 0;
+}
+
+.leftIcons, .rightIcons {
+    display: flex;
     flex-direction: column;
+    justify-content: flex-start;
 }
 
 .leftIcons {
-    margin-left: 6vw;
-    padding-top: 16vh;
+    margin-left: 3vw;
 }
 
-.leftIcons>div {
-    padding-top: 29vh;
+.leftIcons > div {
+    margin-bottom: 2vh;
 }
 
-.leftIcons>div>img {
+.leftIcons > div > img {
     width: 16vw;
 }
 
-
-
-
 .rightIcons {
-    margin-left: 74vw;
-    position: fixed;
-    top: -175;
+    margin-right: 3vw;
 }
 
-.rightIcons>div {
-    padding-top: 30vh;
+.rightIcons > div {
+    margin-bottom: 2vh;
 }
 
-.rightIcons>div>img {
-    width: 18vw
+.rightIcons > div > img {
+    width: 16vw;
 }
 
 .temperatureIcon {
-    right: 7.5vw;
+    /* Slight adjustment to keep aligned */
+    margin-top: 0.5vh;
 }
 
-/*-------Sensor Indicators------*/
-
-
-
+/* ---------- Debug Animation ---------- */
 @keyframes debugAnimation {
-
-    0% {
-        color: red;
-    }
-
-    20% {
-        color: orange;
-    }
-
-    40% {
-        color: yellow;
-    }
-
-    60% {
-        color: green;
-    }
-
-    80% {
-        color: blue;
-    }
-
-    90% {
-        color: indigo;
-    }
-
-    100% {
-        color: red;
-    }
-
-
+    0%   { color: #FF0000; } /* Red */
+    20%  { color: #FFA500; } /* Orange */
+    40%  { color: #FFFF00; } /* Yellow */
+    60%  { color: #00FF00; } /* Green */
+    80%  { color: #0000FF; } /* Blue */
+    90%  { color: #4B0082; } /* Indigo */
+    100% { color: #FF0000; } /* Red */
 }
 
 .debugButton {
     position: absolute;
-    bottom: 0%;
-    left: 0%;
+    bottom: 0;
+    left: 0;
     height: 100%;
     width: 100%;
     border: none;
