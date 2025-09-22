@@ -17,7 +17,7 @@ html, body {
 /* ---------- Plant Icon ---------- */
 .plantIcon {
     position: absolute;
-    width: 60%;        /* approximately matches original */
+    width: 60%;        /* matches old layout proportion */
     bottom: -4%;       /* mimic previous offset */
     left: 29%;         /* approximate original left */
 }
@@ -34,11 +34,20 @@ html, body {
     z-index: 5;
 }
 
+/* ---------- Weather Icon ---------- */
+.weatherIcon {
+    position: absolute;
+    width: 80px;       /* fixed size to prevent covering screen */
+    height: auto;
+    top: 10px;
+    right: 10px;
+    z-index: 4;
+}
+
 /* ---------- Sensor Indicators ---------- */
 .sensorIcons {
     position: absolute;
     width: 100%;
-    height: auto;
     display: flex;
     justify-content: space-between;
     top: 35%;          /* roughly matches original vertical placement */
