@@ -8,22 +8,23 @@ import time
 from PIL import Image
 from inky.auto import auto
 import os
+import asyncio
 
 # Flask setup
 app = Flask(__name__)
 
-# Global vars
-OUTPUT_PATH = "screenshot.png"
+# Screenshot and Flask settings
+OUTPUT_PATH = "/home/woody/Code/screenshot.png"
 LOCAL_URL = "http://127.0.0.1:5000"
-LAN_URL = "http://192.168.137.126:5000"  # your Pi's LAN IP
-URL = None  # chosen dynamically
+LAN_URL = "http://192.168.137.126:5000"  # Optional LAN access
+URL = None  # Will be chosen dynamically
 
 # Flask route
 @app.route("/")
 def display():
     return render_template("display.html")
 
-# Sensor update job
+# Sensor file update job
 def UpdateSensorFile():
     dataControl.WriteData()
 
@@ -43,38 +44,47 @@ def wait_for_flask(url, timeout=15):
         time.sleep(1)
     return False
 
-# Screenshot via Chromium CLI
-def take_screenshot_cli(url, output_path, width=980, height=797):
+# Screenshot using wkhtmltoimage
+def take_screenshot(url, output_path, width=980, height=797):
     try:
-        print("[DEBUG] Taking screenshot via Chromium CLI...")
+        print("[DEBUG] Taking screenshot via wkhtmltoimage...")
 
         # Remove old screenshot if it exists
         if os.path.exists(output_path):
             os.remove(output_path)
-            print(f"[DEBUG] Old screenshot removed: {output_path}")
 
         result = subprocess.run(
             [
-                "chromium-browser",  # or "chromium" on some installs
-                "--headless",
-                "--disable-gpu",
-                f"--screenshot={output_path}",
-                f"--window-size={width},{height}",
+                "wkhtmltoimage",
+                "--width", str(width),
+                "--height", str(height),
                 url,
+                output_path
             ],
             capture_output=True,
             text=True,
             timeout=30
         )
+
         if result.returncode == 0 and os.path.exists(output_path):
-            print(f"[DEBUG] Screenshot saved to {output_path}")
+            size = os.path.getsize(output_path)
+            print(f"[DEBUG] Screenshot saved to {output_path} ({size} bytes)")
+            # Sanity check: ignore tiny blank files
+            if size < 10 * 1024:  # 10 KB
+                print("[WARN] Screenshot too small, likely blank")
+                return False
+            return True
         else:
-            print("[ERROR] Chromium CLI failed:")
-            print(result.stderr)
+            print("[ERROR] wkhtmltoimage failed")
+            print("[DEBUG] STDERR:", result.stderr.strip())
+            return False
+
     except FileNotFoundError:
-        print("[ERROR] chromium-browser not found. Install with: sudo apt install chromium-browser")
+        print("[ERROR] wkhtmltoimage not installed. Run: sudo apt install wkhtmltopdf")
+        return False
     except subprocess.TimeoutExpired:
-        print("[ERROR] Chromium CLI timed out while taking screenshot")
+        print("[ERROR] wkhtmltoimage timed out while taking screenshot")
+        return False
 
 # Update Inky display
 def update_inky(image_path):
@@ -92,13 +102,18 @@ def update_inky(image_path):
         print(f"[ERROR] Failed to update Inky display: {e}")
 
 # Capture loop
-def capture_loop():
+async def capture_loop():
     while True:
-        time.sleep(3)
-        take_screenshot_cli(URL, OUTPUT_PATH)
-        update_inky(OUTPUT_PATH)
+        await asyncio.sleep(3)  # small delay before first capture
+
+        success = take_screenshot(URL, OUTPUT_PATH)
+        if success:
+            update_inky(OUTPUT_PATH)
+        else:
+            print("[ERROR] No screenshot available, skipping Inky update")
+
         print("[DEBUG] Waiting 60 seconds until next capture")
-        time.sleep(60)
+        await asyncio.sleep(60)
 
 if __name__ == "__main__":
     dataControl = dataControls()
@@ -111,7 +126,7 @@ if __name__ == "__main__":
     )
     flask_thread.start()
 
-    # Small boot delay
+    # Small startup delay
     time.sleep(2)
 
     # Pick best URL
@@ -125,5 +140,8 @@ if __name__ == "__main__":
 
     print(f"[INFO] Using Flask URL: {URL}")
 
-    # Run main loop
-    capture_loop()
+    # Run async capture loop
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.create_task(capture_loop())
+    loop.run_forever()
