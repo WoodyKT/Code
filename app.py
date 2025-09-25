@@ -58,7 +58,7 @@ schedule.start()
 def get_weather_icon():
     try:
         apiKey = "99d05d20435a20010a1a2f22deb59bc0"
-        city = "Coventry"
+        city = "Lisbon"
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}"
         res = requests.get(url, timeout=5)
         res.raise_for_status()
@@ -231,3 +231,4 @@ if __name__ == "__main__":
     asyncio.set_event_loop(loop)
     loop.create_task(capture_loop())
     loop.run_forever()
+
